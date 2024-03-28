@@ -12,9 +12,9 @@ async function getOdds() {
     let draw = 0;
 
     const {
-      away_team: awayTeam,
-      home_team: homeTeam,
-      sport_title: leagueName,
+      away_team,
+      home_team,
+      sport_title: league_name,
       commence_time,
     } = match;
 
@@ -29,18 +29,18 @@ async function getOdds() {
       });
     });
 
-    const homeOdd = parseFloat((home / bookiesCount).toFixed(3));
-    const awayOdd = parseFloat((away / bookiesCount).toFixed(3));
-    const drawOdd = parseFloat((draw / bookiesCount).toFixed(3));
+    const home_odd = parseFloat((home / bookiesCount).toFixed(3));
+    const away_odd = parseFloat((away / bookiesCount).toFixed(3));
+    const draw_odd = parseFloat((draw / bookiesCount).toFixed(3));
 
     odds.push({
-      homeTeam,
-      awayTeam,
-      leagueName,
+      home_team,
+      away_team,
+      league_name,
       commence_time,
-      homeOdd,
-      awayOdd,
-      drawOdd,
+      home_odd,
+      away_odd,
+      draw_odd,
     });
   });
   return odds;
