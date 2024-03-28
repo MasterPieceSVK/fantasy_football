@@ -1,34 +1,37 @@
 const { default: axios } = require("axios");
-const getOdds = require("./getOdds");
-const changeTeamName = require("./changeTeamName");
-const { createMatches } = require("../db/db");
+const { fetchOdds } = require("./getOdds");
 
-async function getMatches() {
+const changeTeamName = require("./helpers/changeTeamName");
+const { createMatches } = require("../db/matchesDb");
+const footballDataList = require("../lists/footballDataList");
+const oddLeagueList = require("../lists/oddLeagueList");
+
+async function getMatches(league, i) {
   let today = new Date();
   let todayFormatted = today.toISOString().slice(0, 10);
   today.setDate(today.getDate() + 14);
   let twoWeeksFromToday = today.toISOString().slice(0, 10);
 
   return axios
-    .get("http://api.football-data.org/v4/competitions/2021/matches", {
+    .get(`http://api.football-data.org/v4/competitions/${league}/matches`, {
       params: {
         dateFrom: todayFormatted,
         dateTo: twoWeeksFromToday,
       },
       headers: {
         "X-Unfold-Goals": true,
-        "X-Auth-Token": "b8b7216163c248cd9b28acd257dbeb0d",
+        "X-Auth-Token": process.env.FOOTBALL_DATA_TOKEN,
       },
     })
     .then(async (data) => {
-      const final = await formatData(data);
+      const final = await formatData(data, i);
       return final;
     })
     .catch((e) => console.log(e));
 }
 
-async function formatData(data) {
-  const odds = await getOdds();
+async function formatData(data, i) {
+  const odds = await fetchOdds(oddLeagueList[i]);
   let formattedData = [];
   data.data.matches.map((match) => {
     const tempData = {};
@@ -89,17 +92,19 @@ async function formatData(data) {
 }
 
 async function getMatchesAndAddThemToTheDB() {
-  const matches = await getMatches();
-  if (matches.length > 0) {
-    const success = await createMatches(matches);
-    if (success) {
-      console.log("yay");
-      return;
-    } else {
-      console.log("No");
-      return;
+  footballDataList.forEach(async (league, i) => {
+    const matches = await getMatches(league, i);
+    if (matches.length > 0) {
+      const success = await createMatches(matches);
+      if (success) {
+        console.log("yay");
+        return;
+      } else {
+        console.log("No");
+        return;
+      }
     }
-  }
+  });
 }
 
 getMatchesAndAddThemToTheDB();

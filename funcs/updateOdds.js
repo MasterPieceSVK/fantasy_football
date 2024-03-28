@@ -1,11 +1,13 @@
 const { default: axios } = require("axios");
-const { getFutureMatches, dbUpdateOdds } = require("../db/db");
-const getOdds = require("./getOdds");
-const normalizeTime = require("./normalizeTime");
 
-async function updateOdds() {
+const { fetchOdds } = require("./getOdds");
+const normalizeTime = require("./helpers/normalizeTime");
+const { getFutureMatches, dbUpdateOdds } = require("../db/matchesDb");
+const oddLeagueList = require("../lists/oddLeagueList");
+
+async function updateOdds(league) {
   const matches = await getFutureMatches();
-  const odds = await getOdds();
+  const odds = await fetchOdds(league);
 
   let updatedCounter = 0;
   const updated = [];
@@ -61,4 +63,10 @@ async function updateOdds() {
   }
 }
 
-updateOdds();
+async function updateOddsCentralFunction() {
+  oddLeagueList.forEach((league) => {
+    updateOdds(league);
+  });
+}
+
+updateOddsCentralFunction();

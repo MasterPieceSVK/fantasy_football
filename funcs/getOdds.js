@@ -1,11 +1,26 @@
-const { axios } = require("axios");
+const { default: axios } = require("axios");
 const bundesliga = require("../bundesliga");
 const { epl } = require("../epl");
 
-async function getOdds() {
+async function fetchOdds(league) {
+  return axios
+    .get(`https://api.the-odds-api.com/v4/sports/${league}/odds`, {
+      params: {
+        apiKey: process.env.ODD_API_KEY,
+        regions: "eu",
+      },
+    })
+    .then(async (data) => {
+      const odds = await getOdds(data.data);
+      return odds;
+    })
+    .catch((e) => console.log(e));
+}
+
+async function getOdds(fetchedOddArray) {
   const odds = [];
 
-  epl.map((match) => {
+  fetchedOddArray.map((match) => {
     let home = 0;
     let bookiesCount = 0;
     let away = 0;
@@ -47,4 +62,4 @@ async function getOdds() {
 }
 
 // console.log(getOdds());
-module.exports = getOdds;
+module.exports = { getOdds, fetchOdds };
