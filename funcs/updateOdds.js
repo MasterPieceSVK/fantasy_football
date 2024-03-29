@@ -52,21 +52,20 @@ async function updateOdds(league) {
   console.log("Updated odds: " + updatedCounter);
   //   console.log(updated);
 
-  if (updated.length == 0) {
+  const update = await dbUpdateOdds(updated);
+  if (!update) {
     return false;
   }
-  const update = await dbUpdateOdds(updated);
-  if (update) {
-    console.log("UPDATED");
-  } else {
-    console.log("ERROR");
-  }
+  return updatedCounter;
 }
 
 async function updateOddsCentralFunction() {
-  oddLeagueList.forEach((league) => {
-    updateOdds(league);
-  });
+  const updatedCounters = await Promise.all(
+    oddLeagueList.map((league) => {
+      return updateOdds(league);
+    })
+  );
+  return updatedCounters;
 }
 
-updateOddsCentralFunction();
+module.exports = updateOddsCentralFunction;

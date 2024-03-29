@@ -1,0 +1,11 @@
+INSERT INTO matches (utc_date, home_team, away_team, home_odd, away_odd, draw_odd, league_name,status) 
+VALUES ('2024-03-16T15:00:00Z', 'Burnley', 'Brentford', 3.212, 2.456, 4.985, 'EPL','TIMED');
+
+INSERT INTO matches (utc_date, home_team, away_team, home_odd, away_odd, draw_odd, league_name,status) 
+VALUES ('2024-03-16T15:00:00Z', 'Luton', 'Nottingham Forest', 3.212, 2.456, 4.985, 'EPL','TIMED');
+
+INSERT INTO matches (utc_date, home_team, away_team, home_odd, away_odd, draw_odd, league_name,status) 
+VALUES ('2024-03-16T17:30:00Z', 'Fulham', 'Tottenham Hotspur', 3.212, 2.456, 4.985, 'EPL','TIMED');
+
+INSERT INTO matches (utc_date, home_team, away_team, home_odd, away_odd, draw_odd, league_name,status) 
+VALUES ('2024-03-17T14:00:00Z', 'West Ham United', 'Aston Villa',3.212, 2.456, 4.985, 'EPL','TIMED');

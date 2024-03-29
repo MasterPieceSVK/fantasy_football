@@ -5,10 +5,11 @@ const {
 } = require("../db/matchesDb");
 const changeTeamName = require("./helpers/changeTeamName");
 const normalizeTime = require("./helpers/normalizeTime");
+const footballDataList = require("../lists/footballDataList");
 
-module.exports = updateMatches;
+module.exports = updateMatchesCentralFunc;
 
-async function updateMatches() {
+async function updateMatches(league) {
   const matches = await getUnfinishedPastMatches();
   if (!matches) {
     return false;
@@ -17,21 +18,21 @@ async function updateMatches() {
   let todayFormatted = today.toISOString().slice(0, 10);
   today.setDate(today.getDate() - 14);
   let twoWeeksAgo = today.toISOString().slice(0, 10);
-
+  console.log("league " + league);
   return axios
-    .get("http://api.football-data.org/v4/competitions/2021/matches", {
+    .get(`http://api.football-data.org/v4/competitions/${league}/matches`, {
       params: {
         dateFrom: twoWeeksAgo,
         dateTo: todayFormatted,
       },
       headers: {
         "X-Unfold-Goals": true,
-        "X-Auth-Token": "b8b7216163c248cd9b28acd257dbeb0d",
+        "X-Auth-Token": process.env.FOOTBALL_DATA_TOKEN,
       },
     })
     .then(async (data) => {
       const final = await findFinishedMatches(matches, data.data.matches);
-      console.log(final);
+      // console.log(final);
       return final;
     })
     .catch((e) => console.log(e));
@@ -66,11 +67,14 @@ async function findFinishedMatches(matches, fetchedMatches) {
 }
 
 async function updateMatchesCentralFunc() {
-  const updatedMatches = await updateMatches();
-  if (updatedMatches) {
-    const success = dbUpdateMatches(updatedMatches);
-    success ? console.log("yay") : console.log("no");
-  }
+  return footballDataList.map(async (league) => {
+    console.log("league 2 " + league);
+    const updatedMatches = await updateMatches(league);
+    if (updatedMatches) {
+      const success = dbUpdateMatches(updatedMatches);
+      return success ? true : false;
+    } else {
+      return false;
+    }
+  });
 }
-
-updateMatchesCentralFunc();

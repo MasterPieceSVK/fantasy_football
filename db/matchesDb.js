@@ -1,12 +1,7 @@
-require("dotenv").config({
-  path: ".env",
-});
-const bcrypt = require("bcrypt");
+const db = require("./db");
 
 const pgp = require("pg-promise")();
 const { ParameterizedQuery } = pgp;
-
-const db = pgp(process.env.DATABASE_URL);
 
 module.exports = {
   createMatches,
@@ -101,7 +96,7 @@ async function dbUpdateMatches(matches) {
     const sql =
       pgp.helpers.update(
         match,
-        ["score_home", "score_away", "winner"],
+        ["score_home", "score_away", "winner", "status"],
         "matches"
       ) + ` WHERE home_team=$1 AND away_team=$2 AND utc_date=$3`;
     return db.none(sql, [match.home_team, match.away_team, match.utc_date]);

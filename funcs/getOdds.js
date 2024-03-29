@@ -3,10 +3,38 @@ const bundesliga = require("../bundesliga");
 const { epl } = require("../epl");
 
 async function fetchOdds(league) {
+  let key;
+  switch (league) {
+    case "soccer_germany_bundesliga": {
+      key = process.env.ODD_API_KEY;
+      break;
+    }
+    case "soccer_epl": {
+      key = process.env.ODD_API_KEY2;
+      break;
+    }
+    case "soccer_italy_serie_a": {
+      key = process.env.ODD_API_KEY3;
+      break;
+    }
+    case "soccer_spain_la_liga": {
+      key = process.env.ODD_API_KEY4;
+      break;
+    }
+    case "soccer_france_ligue_one": {
+      key = process.env.ODD_API_KEY5;
+      break;
+    }
+    default: {
+      console.log("api key not found using number 2");
+      key = process.env.ODD_API_KEY2;
+      break;
+    }
+  }
   return axios
     .get(`https://api.the-odds-api.com/v4/sports/${league}/odds`, {
       params: {
-        apiKey: process.env.ODD_API_KEY,
+        apiKey: key,
         regions: "eu",
       },
     })

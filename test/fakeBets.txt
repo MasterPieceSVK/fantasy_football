@@ -1,0 +1,4 @@
+INSERT INTO bets (bet_amount,match_id,odd,user_id,winner) VALUES (500,1447,2.456,1,'AWAY_TEAM');
+INSERT INTO bets (bet_amount,match_id,odd,user_id,winner) VALUES (200,1448,4.985,1,'DRAW');
+INSERT INTO bets (bet_amount,match_id,odd,user_id,winner) VALUES (300,1449,4.985,1,'DRAW');
+INSERT INTO bets (bet_amount,match_id,odd,user_id,winner) VALUES (100,1450,4.985,1,'DRAW');

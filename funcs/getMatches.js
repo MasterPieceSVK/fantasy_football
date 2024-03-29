@@ -82,32 +82,34 @@ async function formatData(data, i) {
   final = final.filter((match) => {
     return match != undefined;
   });
+  // console.log(formattedData);
 
-  if (final.length != formattedData.length) {
-    console.log("error, the arrays are different lenghts");
-    console.log("final: ", final.length);
-    console.log("formatted Data: ", formattedData.length);
-    console.log("odds: ", odds.length);
-  }
+  // if (final.length != formattedData.length) {
+  //   console.log("error, the arrays are different lenghts");
+  //   console.log("final: ", final.length);
+  //   console.log("formatted Data: ", formattedData.length);
+  //   console.log("odds: ", odds.length);
+  // }
   return final;
 }
 
 async function getMatchesAndAddThemToTheDB() {
-  footballDataList.forEach(async (league, i) => {
-    const matches = await getMatches(league, i);
-    if (matches.length > 0) {
-      const success = await createMatches(matches);
-      if (success) {
-        console.log("yay");
-        return;
+  const final = await Promise.all(
+    footballDataList.map(async (league, i) => {
+      const matches = await getMatches(league, i);
+      if (matches.length > 0) {
+        const success = await createMatches(matches);
+        if (success) {
+          return 201;
+        } else {
+          return 500;
+        }
       } else {
-        console.log("No");
-        return;
+        return 200;
       }
-    }
-  });
+    })
+  );
+  return final;
 }
 
-getMatchesAndAddThemToTheDB();
-
-module.exports = getMatches;
+module.exports = getMatchesAndAddThemToTheDB;
