@@ -56,6 +56,7 @@ async function findFinishedMatches(matches, fetchedMatches) {
       }
     });
 
+    match.status = "FINISHED";
     match.winner = theMatch.score.winner;
     match.score_home = theMatch.score.fullTime.home;
     match.score_away = theMatch.score.fullTime.away;

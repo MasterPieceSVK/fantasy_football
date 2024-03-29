@@ -38,6 +38,7 @@ async function formatData(data, i) {
     tempData.utc_date = match.utcDate;
     tempData.home_team = changeTeamName(match.homeTeam.name);
     tempData.away_team = changeTeamName(match.awayTeam.name);
+    tempData.status = match.status;
     // failsafe
     if (!tempData.home_team || !tempData.away_team) {
       console.log(tempData);

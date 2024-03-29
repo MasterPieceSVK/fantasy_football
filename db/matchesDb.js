@@ -28,6 +28,7 @@ async function createMatches(matches) {
       "away_odd",
       "draw_odd",
       "league_name",
+      "status",
     ],
     { table: "matches" }
   );
