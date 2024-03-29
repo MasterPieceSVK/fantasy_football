@@ -34,13 +34,14 @@ registerAccountRouter.post("/", validateInput(), async (req, res) => {
     const { username, password, email } = req.body;
 
     const isAvailableUsername = await checkAvailabilityOfUsername(username);
-    if (!isAvailableUsername) {
+
+    if (isAvailableUsername) {
       res.status(409).json({ message: "Username is already being used" });
       return;
     }
 
     const isAvailableEmail = await checkAvailabilityOfEmail(email);
-    if (!isAvailableEmail) {
+    if (isAvailableEmail) {
       res.status(409).json({ message: "Email is already being used" });
       return;
     }
@@ -59,9 +60,7 @@ registerAccountRouter.post("/", validateInput(), async (req, res) => {
         username,
         email,
         user_id,
-        currency_amount,
       };
-
       const token = signToken(userData);
 
       if (!token) {
@@ -71,6 +70,7 @@ registerAccountRouter.post("/", validateInput(), async (req, res) => {
       }
 
       res.status(201).json({
+        success: true,
         user_id,
         username,
         email,

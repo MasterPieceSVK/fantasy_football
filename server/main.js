@@ -26,4 +26,7 @@ apiRouter.use("/register", registerAccountRouter);
 const loginRouter = require("./routes/user_routes/login");
 apiRouter.use("/login", loginRouter);
 
+const placeBetRouter = require("./routes/bet_routes/place-bet");
+apiRouter.use("/place-bet", placeBetRouter);
+
 module.exports = apiRouter;

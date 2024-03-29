@@ -33,17 +33,20 @@ loginRouter.post("/", validateInput(), async (req, res) => {
 
     const doesNotUsernameExist = await checkAvailabilityOfUsername(username);
 
-    if (doesNotUsernameExist) {
+    if (!doesNotUsernameExist) {
       return res
         .status(401)
         .json({ message: "Credentials dont match our database" });
     }
 
     const userObj = await userLogin(username);
-
     if (!userObj) {
-      res.status(500).json({ message: "Something went wrong. Error Code 4" });
+      return res
+        .status(500)
+        .json({ message: "Something went wrong. Error Code 4" });
     }
+    const currency_amount = userObj.currency_amount;
+    delete userObj.currency_amount;
 
     const hashedPassword = userObj.password;
     const match = await bcrypt.compare(password, hashedPassword);
@@ -55,12 +58,13 @@ loginRouter.post("/", validateInput(), async (req, res) => {
     }
     delete userObj.password;
 
-    console.log(userObj);
     const token = signToken(userObj);
 
     res.json({
       ...userObj,
+      success: true,
       token,
+      currency_amount,
     });
   } catch (e) {
     console.log(e);

@@ -9,32 +9,36 @@ module.exports = {
   checkAvailabilityOfEmail,
   createUser,
   userLogin,
+  getCurrencyAmount,
 };
 
 async function checkAvailabilityOfUsername(username) {
   const user = new ParameterizedQuery({
-    text: "SELECT * FROM users WHERE username = $1",
+    text: "SELECT EXISTS (SELECT 1 FROM users WHERE username = $1)",
     values: [username],
   });
 
   return db
-    .none(user)
-    .then(() => {
-      return true;
+    .one(user)
+    .then((data) => {
+      return data.exists;
     })
-    .catch(() => false);
+    .catch((e) => {
+      console.log(e);
+      false;
+    });
 }
 
 async function checkAvailabilityOfEmail(email) {
   const user = new ParameterizedQuery({
-    text: "SELECT * FROM users WHERE email = $1",
+    text: "SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)",
     values: [email],
   });
 
   return db
-    .none(user)
-    .then(() => {
-      return true;
+    .one(user)
+    .then((data) => {
+      return data.exists;
     })
     .catch(() => {
       return false;
@@ -70,6 +74,23 @@ async function userLogin(username) {
     .one(user)
     .then((data) => {
       return data;
+    })
+    .catch((e) => {
+      console.log(e);
+      return false;
+    });
+}
+
+async function getCurrencyAmount(user_id) {
+  const currencyAmountSql = new ParameterizedQuery({
+    text: "SELECT currency_amount FROM users WHERE user_id = $1",
+    values: [user_id],
+  });
+
+  return db
+    .one(currencyAmountSql)
+    .then((currencyAmount) => {
+      return currencyAmount;
     })
     .catch(() => {
       return false;

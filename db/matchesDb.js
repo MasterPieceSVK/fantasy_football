@@ -9,6 +9,7 @@ module.exports = {
   dbUpdateOdds,
   getUnfinishedPastMatches,
   dbUpdateMatches,
+  checkIfMatchExists,
 };
 
 async function createMatches(matches) {
@@ -111,6 +112,23 @@ async function dbUpdateMatches(matches) {
     })
     .catch((error) => {
       console.log(error);
+      return false;
+    });
+}
+
+async function checkIfMatchExists(match_id) {
+  const matches = new ParameterizedQuery({
+    text: "SELECT EXISTS (SELECT 1 FROM matches WHERE match_id = $1)",
+    values: [match_id],
+  });
+
+  return db
+    .many(matches)
+    .then((data) => {
+      return data[0].exists;
+    })
+    .catch((e) => {
+      console.log(e);
       return false;
     });
 }

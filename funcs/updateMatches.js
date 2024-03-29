@@ -18,7 +18,9 @@ async function updateMatches(league) {
   let todayFormatted = today.toISOString().slice(0, 10);
   today.setDate(today.getDate() - 14);
   let twoWeeksAgo = today.toISOString().slice(0, 10);
-  console.log("league " + league);
+  // console.log("league " + league);
+  // console.log(`http://api.football-data.org/v4/competitions/${league}/matches`);
+
   return axios
     .get(`http://api.football-data.org/v4/competitions/${league}/matches`, {
       params: {
@@ -31,6 +33,7 @@ async function updateMatches(league) {
       },
     })
     .then(async (data) => {
+      // console.log(data.data.matches);
       const final = await findFinishedMatches(matches, data.data.matches);
       // console.log(final);
       return final;
@@ -42,11 +45,27 @@ async function findFinishedMatches(matches, fetchedMatches) {
   fetchedMatches = fetchedMatches.filter((match) => {
     return match.status == "FINISHED";
   });
+
+  // console.dir(fetchedMatches, { depth: null });
+
   return matches.map((match, i) => {
     match.utc_date = normalizeTime(match.utc_date);
     const theMatch = fetchedMatches.find((fetchedMatch) => {
       fetchedMatch.homeTeam.name = changeTeamName(fetchedMatch.homeTeam.name);
       fetchedMatch.awayTeam.name = changeTeamName(fetchedMatch.awayTeam.name);
+      // console.log(fetchedMatch.homeTeam.name);
+      // console.log(fetchedMatch.awayTeam.name);
+      console.log("*----");
+      console.log(fetchedMatch.utcDate);
+      console.log(fetchedMatch.homeTeam.name);
+      console.log(fetchedMatch.awayTeam.name);
+      console.log("----");
+      console.log(match);
+      console.log(match.utc_date);
+
+      console.log(match.home_team);
+
+      console.log(match.away_team);
 
       if (fetchedMatch.homeTeam.name && fetchedMatch.awayTeam.name) {
         return (
@@ -56,25 +75,23 @@ async function findFinishedMatches(matches, fetchedMatches) {
         );
       }
     });
-
     match.status = "FINISHED";
     match.winner = theMatch.score.winner;
     match.score_home = theMatch.score.fullTime.home;
     match.score_away = theMatch.score.fullTime.away;
-
     return match;
   });
 }
 
 async function updateMatchesCentralFunc() {
   return footballDataList.map(async (league) => {
-    console.log("league 2 " + league);
+    // console.log("league 2 " + league);
     const updatedMatches = await updateMatches(league);
-    if (updatedMatches) {
-      const success = dbUpdateMatches(updatedMatches);
-      return success ? true : false;
-    } else {
-      return false;
-    }
+    // if (updatedMatches) {
+    //   const success = dbUpdateMatches(updatedMatches);
+    //   return success ? true : false;
+    // } else {
+    //   return false;
+    // }
   });
 }
