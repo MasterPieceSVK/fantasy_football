@@ -34,6 +34,6 @@ getMyNotificationsRouter.get("/", authMiddleware, async (req, res) => {
     res.json(notifications);
   } catch (e) {
     console.log(e);
-    res.status(500).json({ message: "Something went wrong. Error Code 11" });
+    res.status(500).json({ message: "Something went wrong. Error Code 12" });
   }
 });

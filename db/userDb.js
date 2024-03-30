@@ -10,6 +10,8 @@ module.exports = {
   createUser,
   userLogin,
   getCurrencyAmount,
+  addCurrency,
+  userExists,
 };
 
 async function checkAvailabilityOfUsername(username) {
@@ -94,5 +96,39 @@ async function getCurrencyAmount(user_id) {
     })
     .catch(() => {
       return false;
+    });
+}
+
+async function addCurrency(user_id) {
+  const currencyAmountSql = new ParameterizedQuery({
+    text: "UPDATE users SET currency_amount = currency_amount + 500 WHERE user_id = $1 RETURNING currency_amount",
+    values: [user_id],
+  });
+
+  return db
+    .one(currencyAmountSql)
+    .then((data) => {
+      return data;
+    })
+    .catch((e) => {
+      console.log(e);
+      return false;
+    });
+}
+
+async function userExists(user_id) {
+  const user = new ParameterizedQuery({
+    text: "SELECT EXISTS (SELECT 1 FROM users WHERE user_id = $1)",
+    values: [user_id],
+  });
+
+  return db
+    .one(user)
+    .then((data) => {
+      return data.exists;
+    })
+    .catch((e) => {
+      console.log(e);
+      false;
     });
 }

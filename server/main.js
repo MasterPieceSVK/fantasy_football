@@ -44,4 +44,7 @@ apiRouter.use("/get-my-notifications", getMyNotificationsRouter);
 const deleteNotificationsRouter = require("./routes/notifications_routes/deleteNotifications");
 apiRouter.use("/delete-notifications", deleteNotificationsRouter);
 
+const addCurrencyRouter = require("./routes/user_routes/addCurrency");
+apiRouter.use("/add-currency", addCurrencyRouter);
+
 module.exports = apiRouter;
