@@ -1,9 +1,9 @@
 const express = require("express");
 const getMatchesAndAddThemToTheDB = require("../../../funcs/getMatches");
-const getMatchesRouter = express.Router();
-module.exports = getMatchesRouter;
+const getMatchesFuncRouter = express.Router();
+module.exports = getMatchesFuncRouter;
 
-getMatchesRouter.get("/", async (req, res) => {
+getMatchesFuncRouter.get("/", async (req, res) => {
   if (req.headers.auth != process.env.OWN_API_AUTH_KEY) {
     res.status(401).send("Unathorized");
     return;

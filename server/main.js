@@ -11,8 +11,8 @@ apiRouter.get("/", (req, res) => {
   });
 });
 
-const getMatchesRouter = require("./routes/function_routes/getMatches");
-apiRouter.use("/get-matches", getMatchesRouter);
+const getMatchesFuncRouter = require("./routes/function_routes/getMatches");
+apiRouter.use("/get-matches-func", getMatchesFuncRouter);
 
 const updateMatchesRouter = require("./routes/function_routes/updateMatches");
 apiRouter.use("/update-matches", updateMatchesRouter);
@@ -28,5 +28,9 @@ apiRouter.use("/login", loginRouter);
 
 const placeBetRouter = require("./routes/bet_routes/place-bet");
 apiRouter.use("/place-bet", placeBetRouter);
+
+const getMatchesRouter = require("./routes/matches_routes.js/getMatches");
+
+apiRouter.use("/get-matches", getMatchesRouter);
 
 module.exports = apiRouter;

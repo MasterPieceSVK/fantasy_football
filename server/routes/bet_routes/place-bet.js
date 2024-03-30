@@ -11,7 +11,8 @@ placeBetRouter.post("/", authMiddleware, async (req, res) => {
     const { bet_amount, match_id, winner } = req.body;
     const { user_id } = req;
 
-    const { currency_amount } = await getCurrencyAmount(user_id);
+    let { currency_amount } = await getCurrencyAmount(user_id);
+    currency_amount = Number(currency_amount);
     if (bet_amount > currency_amount) {
       return res
         .status(401)

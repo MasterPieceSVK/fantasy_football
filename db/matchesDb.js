@@ -11,6 +11,7 @@ module.exports = {
   getUnfinishedPastMatches,
   dbUpdateMatches,
   checkIfMatchExists,
+  getMatches,
 };
 
 async function createMatches(matches) {
@@ -91,10 +92,6 @@ async function getUnfinishedPastMatches(league) {
   return db
     .many(matches)
     .then((data) => {
-      console.log("------------------------------------------------------");
-      console.log(data);
-      console.log("------------------------------------------------------");
-
       return data;
     })
     .catch((e) => console.log(e));
@@ -134,6 +131,23 @@ async function checkIfMatchExists(match_id) {
     .many(matches)
     .then((data) => {
       return data[0].exists;
+    })
+    .catch((e) => {
+      console.log(e);
+      return false;
+    });
+}
+
+async function getMatches() {
+  const matches = new ParameterizedQuery({
+    text: "SELECT * FROM matches WHERE utc_date > (CURRENT_TIMESTAMP - INTERVAL '14 days') AND utc_date < (CURRENT_TIMESTAMP + INTERVAL '14 days')",
+  });
+
+  return db
+    .many(matches)
+    .then((data) => {
+      console.log(data);
+      return data;
     })
     .catch((e) => {
       console.log(e);

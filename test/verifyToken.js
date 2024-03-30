@@ -3,7 +3,7 @@ require("dotenv").config({
   path: ".env",
 });
 const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1heGlrbWF4aWtzcyIsImVtYWlsIjoibWF4aWtAbWF4aWsuY29tc3MiLCJ1c2VyX2lkIjoxNCwiY3VycmVuY3lfYW1vdW50IjoxMDAwLCJpYXQiOjE3MTE3Mzk4NTQsImV4cCI6MTcxNDMzMTg1NH0._STZzPWozoqWVTjE9aiOlSRo_mkx-fEY4lAQJYRBSpk";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RlcjEyMzRzIiwiZW1haWwiOiJtYXhpa0B0ZXN0LmNvbWFzcyIsInVzZXJfaWQiOjIzLCJpYXQiOjE3MTE4MDUyODksImV4cCI6MTcxNDM5NzI4OX0.yqdwJhyIQTRkbd_xtXM9I0Fv7EmuWtTYKIvRWvpSL_0";
 
 jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
   if (err) {
