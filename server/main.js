@@ -30,7 +30,18 @@ const placeBetRouter = require("./routes/bet_routes/place-bet");
 apiRouter.use("/place-bet", placeBetRouter);
 
 const getMatchesRouter = require("./routes/matches_routes.js/getMatches");
-
 apiRouter.use("/get-matches", getMatchesRouter);
+
+const getMyBetsRouter = require("./routes/bet_routes/getBets");
+apiRouter.use("/get-my-bets", getMyBetsRouter);
+
+const cancelBetRouter = require("./routes/bet_routes/cancelBet");
+apiRouter.use("/delete-my-bet", cancelBetRouter);
+
+const getMyNotificationsRouter = require("./routes/notifications_routes/getMyNotifications");
+apiRouter.use("/get-my-notifications", getMyNotificationsRouter);
+
+const deleteNotificationsRouter = require("./routes/notifications_routes/deleteNotifications");
+apiRouter.use("/delete-notifications", deleteNotificationsRouter);
 
 module.exports = apiRouter;

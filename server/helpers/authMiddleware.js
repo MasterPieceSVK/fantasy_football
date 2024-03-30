@@ -20,6 +20,11 @@ function authMiddleware(req, res, next) {
         if (isExpired) {
           return res.status(401).json({ message: "Token expired" });
         }
+        if (!user.user_id || !user.username || !user.email) {
+          return res
+            .status(400)
+            .json({ message: "Invalid token. Token code 1" });
+        }
 
         req.user_id = user.user_id;
         req.username = user.username;

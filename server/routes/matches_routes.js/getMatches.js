@@ -15,6 +15,6 @@ getMatchesRouter.get("/", async (req, res) => {
     return match.status == "TIMED";
   });
 
-  const finalObj = [finishedMatches, timedMatches];
+  const finalObj = [{ finishedMatches }, { timedMatches }];
   res.json(finalObj);
 });

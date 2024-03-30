@@ -2,13 +2,13 @@ const express = require("express");
 const authMiddleware = require("../../helpers/authMiddleware");
 const { getCurrencyAmount } = require("../../../db/userDb");
 const { checkIfMatchExists } = require("../../../db/matchesDb");
-const { placeBet, getOdd } = require("../../../db/betsDb");
+const { placeBet, getOdd, getUtcDateForMatch } = require("../../../db/betsDb");
 const placeBetRouter = express.Router();
 module.exports = placeBetRouter;
 
 placeBetRouter.post("/", authMiddleware, async (req, res) => {
   try {
-    const { bet_amount, match_id, winner } = req.body;
+    const { bet_amount, match_id, bet_winner } = req.body;
     const { user_id } = req;
 
     let { currency_amount } = await getCurrencyAmount(user_id);
@@ -20,20 +20,37 @@ placeBetRouter.post("/", authMiddleware, async (req, res) => {
     }
 
     const matchExists = await checkIfMatchExists(match_id);
+
     if (!matchExists) {
       return res.status(404).json({ message: "Match doesnt exist" });
     }
 
-    if (winner != "HOME_TEAM" && winner != "AWAY_TEAM" && winner != "DRAW") {
-      return res.status(400).json({ message: "Wrong input in winner field" });
+    let utc_date = await getUtcDateForMatch(match_id);
+    utc_date = new Date(utc_date);
+    const dateRn = new Date();
+    if (utc_date <= dateRn) {
+      return res.status(400).json({
+        message:
+          "Match already started or finished. You cant bet on this match.",
+      });
     }
 
-    const odd = await getOdd(match_id, winner);
+    if (
+      bet_winner != "HOME_TEAM" &&
+      bet_winner != "AWAY_TEAM" &&
+      bet_winner != "DRAW"
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Wrong input in bet_winner field" });
+    }
+
+    const odd = await getOdd(match_id, bet_winner);
     const betObj = {
       user_id,
       bet_amount,
       match_id,
-      winner,
+      bet_winner,
       odd,
     };
 

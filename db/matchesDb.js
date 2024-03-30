@@ -85,7 +85,7 @@ async function getUnfinishedPastMatches(league) {
   const league_name = convertLeagueCodeToName(league);
 
   const matches = new ParameterizedQuery({
-    text: "SELECT * FROM matches WHERE utc_date < (CURRENT_TIMESTAMP - INTERVAL '1.5 hours') AND league_name= $1",
+    text: "SELECT * FROM matches WHERE (utc_date + INTERVAL '2 hours') < CURRENT_TIMESTAMP AND league_name= $1",
     values: [league_name],
   });
 
@@ -122,15 +122,15 @@ async function dbUpdateMatches(matches) {
 }
 
 async function checkIfMatchExists(match_id) {
-  const matches = new ParameterizedQuery({
+  const matchExists = new ParameterizedQuery({
     text: "SELECT EXISTS (SELECT 1 FROM matches WHERE match_id = $1)",
     values: [match_id],
   });
 
   return db
-    .many(matches)
+    .one(matchExists)
     .then((data) => {
-      return data[0].exists;
+      return data.exists;
     })
     .catch((e) => {
       console.log(e);
@@ -146,7 +146,7 @@ async function getMatches() {
   return db
     .many(matches)
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       return data;
     })
     .catch((e) => {
