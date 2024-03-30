@@ -99,9 +99,9 @@ async function getCurrencyAmount(user_id) {
     });
 }
 
-async function addCurrency(user_id) {
+async function addCurrency(user_id, currency) {
   const currencyAmountSql = new ParameterizedQuery({
-    text: "UPDATE users SET currency_amount = currency_amount + 500 WHERE user_id = $1 RETURNING currency_amount",
+    text: `UPDATE users SET currency_amount = currency_amount + ${currency} WHERE user_id = $1 RETURNING currency_amount`,
     values: [user_id],
   });
 

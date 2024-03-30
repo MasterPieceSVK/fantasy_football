@@ -7,7 +7,7 @@ module.exports = addCurrencyRouter;
 addCurrencyRouter.put("/", authMiddleware, async (req, res) => {
   try {
     const { user_id } = req;
-    const added = await addCurrency(user_id);
+    const added = await addCurrency(user_id, 100);
 
     if (!added) {
       return res.status(500).json({ message: "Error while adding currency" });
