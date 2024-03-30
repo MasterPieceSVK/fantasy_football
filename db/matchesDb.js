@@ -1,3 +1,4 @@
+const convertLeagueCodeToName = require("../funcs/helpers/convertLeagueCodeToName");
 const db = require("./db");
 
 const pgp = require("pg-promise")();
@@ -79,14 +80,21 @@ async function dbUpdateOdds(oddsArray) {
     });
 }
 
-async function getUnfinishedPastMatches() {
+async function getUnfinishedPastMatches(league) {
+  const league_name = convertLeagueCodeToName(league);
+
   const matches = new ParameterizedQuery({
-    text: "SELECT * FROM matches WHERE winner IS NULL AND utc_date <= NOW()",
+    text: "SELECT * FROM matches WHERE utc_date < (CURRENT_TIMESTAMP - INTERVAL '1.5 hours') AND league_name= $1",
+    values: [league_name],
   });
 
   return db
     .many(matches)
     .then((data) => {
+      console.log("------------------------------------------------------");
+      console.log(data);
+      console.log("------------------------------------------------------");
+
       return data;
     })
     .catch((e) => console.log(e));

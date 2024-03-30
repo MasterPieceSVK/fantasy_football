@@ -2,7 +2,7 @@ const express = require("express");
 const authMiddleware = require("../../helpers/authMiddleware");
 const { getCurrencyAmount } = require("../../../db/userDb");
 const { checkIfMatchExists } = require("../../../db/matchesDb");
-const { placeBet } = require("../../../db/betsDb");
+const { placeBet, getOdd } = require("../../../db/betsDb");
 const placeBetRouter = express.Router();
 module.exports = placeBetRouter;
 
@@ -27,11 +27,13 @@ placeBetRouter.post("/", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Wrong input in winner field" });
     }
 
+    const odd = await getOdd(match_id, winner);
     const betObj = {
       user_id,
       bet_amount,
       match_id,
       winner,
+      odd,
     };
 
     const bet_id = await placeBet(betObj);

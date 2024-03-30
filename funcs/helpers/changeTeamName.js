@@ -10,6 +10,8 @@ function changeTeamName(name) {
       return "Chelsea";
     case "Burnley FC":
       return "Burnley";
+    case "Burnley":
+      return "Burnley";
     case "Nottingham Forest FC":
       return "Nottingham Forest";
     case "Crystal Palace FC":
@@ -22,9 +24,13 @@ function changeTeamName(name) {
       return "Tottenham Hotspur";
     case "Luton Town FC":
       return "Luton";
+    case "Luton":
+      return "Luton";
     case "Wolverhampton Wanderers FC":
       return "Wolverhampton Wanderers";
     case "Aston Villa FC":
+      return "Aston Villa";
+    case "Aston Villa":
       return "Aston Villa";
     case "Brentford FC":
       return "Brentford";

@@ -10,7 +10,7 @@ const footballDataList = require("../lists/footballDataList");
 module.exports = updateMatchesCentralFunc;
 
 async function updateMatches(league) {
-  const matches = await getUnfinishedPastMatches();
+  const matches = await getUnfinishedPastMatches(league);
   if (!matches) {
     return false;
   }
@@ -18,8 +18,6 @@ async function updateMatches(league) {
   let todayFormatted = today.toISOString().slice(0, 10);
   today.setDate(today.getDate() - 14);
   let twoWeeksAgo = today.toISOString().slice(0, 10);
-  // console.log("league " + league);
-  // console.log(`http://api.football-data.org/v4/competitions/${league}/matches`);
 
   return axios
     .get(`http://api.football-data.org/v4/competitions/${league}/matches`, {
@@ -33,9 +31,7 @@ async function updateMatches(league) {
       },
     })
     .then(async (data) => {
-      // console.log(data.data.matches);
       const final = await findFinishedMatches(matches, data.data.matches);
-      // console.log(final);
       return final;
     })
     .catch((e) => console.log(e));
@@ -46,52 +42,51 @@ async function findFinishedMatches(matches, fetchedMatches) {
     return match.status == "FINISHED";
   });
 
-  // console.dir(fetchedMatches, { depth: null });
-
   return matches.map((match, i) => {
     match.utc_date = normalizeTime(match.utc_date);
+
     const theMatch = fetchedMatches.find((fetchedMatch) => {
-      fetchedMatch.homeTeam.name = changeTeamName(fetchedMatch.homeTeam.name);
-      fetchedMatch.awayTeam.name = changeTeamName(fetchedMatch.awayTeam.name);
-      // console.log(fetchedMatch.homeTeam.name);
-      // console.log(fetchedMatch.awayTeam.name);
-      console.log("*----");
-      console.log(fetchedMatch.utcDate);
-      console.log(fetchedMatch.homeTeam.name);
-      console.log(fetchedMatch.awayTeam.name);
-      console.log("----");
-      console.log(match);
-      console.log(match.utc_date);
-
-      console.log(match.home_team);
-
-      console.log(match.away_team);
-
-      if (fetchedMatch.homeTeam.name && fetchedMatch.awayTeam.name) {
-        return (
-          fetchedMatch.utcDate == match.utc_date &&
-          fetchedMatch.homeTeam.name == match.home_team &&
-          fetchedMatch.awayTeam.name == match.away_team
-        );
-      }
+      const tempMatch = {
+        utcDate: fetchedMatch.utcDate,
+        homeTeam: {
+          name: fetchedMatch.homeTeam.name,
+        },
+        awayTeam: {
+          name: fetchedMatch.awayTeam.name,
+        },
+      };
+      tempMatch.homeTeam.name = changeTeamName(tempMatch.homeTeam.name);
+      tempMatch.awayTeam.name = changeTeamName(tempMatch.awayTeam.name);
+      // console.log(tempMatch);
+      // console.log(match);
+      return (
+        tempMatch.utcDate == match.utc_date &&
+        tempMatch.homeTeam.name == match.home_team &&
+        tempMatch.awayTeam.name == match.away_team
+      );
     });
-    match.status = "FINISHED";
-    match.winner = theMatch.score.winner;
-    match.score_home = theMatch.score.fullTime.home;
-    match.score_away = theMatch.score.fullTime.away;
+
+    if (theMatch) {
+      match.status = "FINISHED";
+      match.winner = theMatch.score.winner;
+      match.score_home = theMatch.score.fullTime.home;
+      match.score_away = theMatch.score.fullTime.away;
+    } else {
+      console.log("Match not found");
+    }
+
     return match;
   });
 }
 
 async function updateMatchesCentralFunc() {
   return footballDataList.map(async (league) => {
-    // console.log("league 2 " + league);
     const updatedMatches = await updateMatches(league);
-    // if (updatedMatches) {
-    //   const success = dbUpdateMatches(updatedMatches);
-    //   return success ? true : false;
-    // } else {
-    //   return false;
-    // }
+    if (updatedMatches) {
+      const success = dbUpdateMatches(updatedMatches);
+      return success ? true : false;
+    } else {
+      return false;
+    }
   });
 }
