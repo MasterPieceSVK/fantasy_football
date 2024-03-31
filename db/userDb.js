@@ -12,6 +12,7 @@ module.exports = {
   getCurrencyAmount,
   addCurrency,
   userExists,
+  isUserEligibleForNewCurrency,
 };
 
 async function checkAvailabilityOfUsername(username) {
@@ -100,15 +101,39 @@ async function getCurrencyAmount(user_id) {
 }
 
 async function addCurrency(user_id, currency) {
-  const currencyAmountSql = new ParameterizedQuery({
-    text: `UPDATE users SET currency_amount = currency_amount + ${currency} WHERE user_id = $1 RETURNING currency_amount`,
+  const updateQuery = new ParameterizedQuery({
+    text: `UPDATE users SET currency_amount = currency_amount + $1 WHERE user_id = $2 RETURNING currency_amount`,
+    values: [currency, user_id],
+  });
+
+  const insertQuery = new ParameterizedQuery({
+    text: `INSERT INTO free_currency(user_id, amount) VALUES($1, $2)`,
+    values: [user_id, currency],
+  });
+
+  return db
+    .tx((t) => {
+      return t.batch([t.one(updateQuery), t.none(insertQuery)]);
+    })
+    .then((data) => {
+      return data[0];
+    })
+    .catch((e) => {
+      console.log(e);
+      return false;
+    });
+}
+
+async function isUserEligibleForNewCurrency(user_id) {
+  const isEligibleSql = new ParameterizedQuery({
+    text: `SELECT claimed_at FROM free_currency WHERE user_id = $1 ORDER BY claimed_at DESC LIMIT 1`,
     values: [user_id],
   });
 
   return db
-    .one(currencyAmountSql)
+    .one(isEligibleSql)
     .then((data) => {
-      return data;
+      return data.claimed_at;
     })
     .catch((e) => {
       console.log(e);
