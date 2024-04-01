@@ -10,6 +10,8 @@ getMatchesRouter.get("/", async (req, res) => {
   finishedMatches = matches.filter((match) => {
     return match.status == "FINISHED";
   });
+  finishedMatches.reverse();
+
   let timedMatches = [];
   timedMatches = matches.filter((match) => {
     return match.status == "TIMED";

@@ -47,4 +47,7 @@ apiRouter.use("/delete-notifications", deleteNotificationsRouter);
 const addCurrencyRouter = require("./routes/user_routes/addCurrency");
 apiRouter.use("/add-currency", addCurrencyRouter);
 
+const getUserInfoRouter = require("./routes/user_routes/getUserInfo");
+apiRouter.use("/get-user-info", getUserInfoRouter);
+
 module.exports = apiRouter;

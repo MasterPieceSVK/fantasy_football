@@ -36,7 +36,7 @@ loginRouter.post("/", validateInput(), async (req, res) => {
     if (!doesNotUsernameExist) {
       return res
         .status(401)
-        .json({ message: "Credentials dont match our database" });
+        .json({ message: "Credentials don't match our database" });
     }
 
     const userObj = await userLogin(username);

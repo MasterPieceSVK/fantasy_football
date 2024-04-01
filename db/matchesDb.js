@@ -140,7 +140,7 @@ async function checkIfMatchExists(match_id) {
 
 async function getMatches() {
   const matches = new ParameterizedQuery({
-    text: "SELECT * FROM matches WHERE utc_date > (CURRENT_TIMESTAMP - INTERVAL '14 days') AND utc_date < (CURRENT_TIMESTAMP + INTERVAL '14 days')",
+    text: "SELECT * FROM matches WHERE utc_date > (CURRENT_TIMESTAMP - INTERVAL '14 days') AND utc_date < (CURRENT_TIMESTAMP + INTERVAL '14 days') ORDER BY utc_date",
   });
 
   return db
