@@ -59,7 +59,7 @@ async function getOdd(match_id, side) {
 
 async function getMyBets(user_id) {
   const matches = new ParameterizedQuery({
-    text: "SELECT * FROM bets WHERE user_id = $1",
+    text: "SELECT * FROM bets WHERE user_id = $1 ORDER BY utc_date DESC",
     values: [user_id],
   });
 
@@ -76,7 +76,7 @@ async function getMyBets(user_id) {
 
 async function getMyBetsWithMatches(user_id) {
   const matches = new ParameterizedQuery({
-    text: "SELECT * FROM bets JOIN matches ON bets.match_id = matches.match_id WHERE bets.user_id = $1",
+    text: "SELECT * FROM bets JOIN matches ON bets.match_id = matches.match_id WHERE bets.user_id = $1 ORDER BY utc_date DESC",
     values: [user_id],
   });
 

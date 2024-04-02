@@ -4,19 +4,24 @@ const getMatchesRouter = express.Router();
 module.exports = getMatchesRouter;
 
 getMatchesRouter.get("/", async (req, res) => {
-  const matches = await getMatches();
+  try {
+    const matches = await getMatches();
 
-  let finishedMatches = [];
-  finishedMatches = matches.filter((match) => {
-    return match.status == "FINISHED";
-  });
-  finishedMatches.reverse();
+    let finishedMatches = [];
+    finishedMatches = matches.filter((match) => {
+      return match.status == "FINISHED";
+    });
+    finishedMatches.reverse();
 
-  let timedMatches = [];
-  timedMatches = matches.filter((match) => {
-    return match.status == "TIMED";
-  });
+    let timedMatches = [];
+    timedMatches = matches.filter((match) => {
+      return match.status == "TIMED";
+    });
 
-  const finalObj = [{ finishedMatches }, { timedMatches }];
-  res.json(finalObj);
+    const finalObj = [{ finishedMatches }, { timedMatches }];
+    res.json(finalObj);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Something went wrong.Error code 14" });
+  }
 });
