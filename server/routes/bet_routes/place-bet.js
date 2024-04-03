@@ -8,21 +8,26 @@ module.exports = placeBetRouter;
 
 placeBetRouter.post("/", authMiddleware, async (req, res) => {
   try {
-    const { bet_amount, match_id, bet_winner } = req.body;
+    let { bet_amount, match_id, bet_winner } = req.body;
     const { user_id } = req;
-
     let { currency_amount } = await getCurrencyAmount(user_id);
     currency_amount = Number(currency_amount);
-    if (bet_amount > currency_amount) {
+    bet_amount = Number(bet_amount);
+    if (bet_amount < 0) {
       return res
-        .status(401)
-        .json({ message: "You dont have enough credits for this transaction" });
+        .status(400)
+        .json({ message: "The bet amount can't be negative" });
+    }
+    if (bet_amount > currency_amount) {
+      return res.status(401).json({
+        message: "You don't have enough credits for this transaction",
+      });
     }
 
     const matchExists = await checkIfMatchExists(match_id);
 
     if (!matchExists) {
-      return res.status(404).json({ message: "Match doesnt exist" });
+      return res.status(404).json({ message: "Match doesn't exist" });
     }
 
     let utc_date = await getUtcDateForMatch(match_id);

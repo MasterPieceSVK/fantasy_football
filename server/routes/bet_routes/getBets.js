@@ -35,7 +35,7 @@ getMyBetsRouter.get("/", authMiddleware, async (req, res) => {
     const unsettledBets = myBets.filter((bet) => {
       return bet.outcome == null;
     });
-
+    unsettledBets.reverse();
     res.json([{ settledBets }, { unsettledBets }]);
   } catch (e) {
     console.log(e);

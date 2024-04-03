@@ -50,4 +50,7 @@ apiRouter.use("/add-currency", addCurrencyRouter);
 const getUserInfoRouter = require("./routes/user_routes/getUserInfo");
 apiRouter.use("/get-user-info", getUserInfoRouter);
 
+const getBalanceAmountRouter = require("./routes/user_routes/getBalance");
+apiRouter.use("/get-balance", getBalanceAmountRouter);
+
 module.exports = apiRouter;

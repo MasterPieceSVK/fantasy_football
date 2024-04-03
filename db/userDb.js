@@ -13,6 +13,7 @@ module.exports = {
   addCurrency,
   userExists,
   isUserEligibleForNewCurrency,
+  getBalanceAmount,
 };
 
 async function checkAvailabilityOfUsername(username) {
@@ -151,6 +152,23 @@ async function userExists(user_id) {
     .one(user)
     .then((data) => {
       return data.exists;
+    })
+    .catch((e) => {
+      console.log(e);
+      false;
+    });
+}
+
+async function getBalanceAmount(user_id) {
+  const userSql = new ParameterizedQuery({
+    text: "SELECT currency_amount FROM users WHERE user_id = $1",
+    values: [user_id],
+  });
+
+  return db
+    .one(userSql)
+    .then((data) => {
+      return Number(data.currency_amount);
     })
     .catch((e) => {
       console.log(e);
