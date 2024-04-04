@@ -11,6 +11,8 @@ module.exports = updateMatchesCentralFunc;
 
 async function updateMatches(league) {
   const matches = await getUnfinishedPastMatches(league);
+  console.log(matches);
+
   if (!matches) {
     return false;
   }

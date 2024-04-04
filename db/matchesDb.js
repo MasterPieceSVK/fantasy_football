@@ -85,7 +85,7 @@ async function getUnfinishedPastMatches(league) {
   const league_name = convertLeagueCodeToName(league);
 
   const matches = new ParameterizedQuery({
-    text: "SELECT * FROM matches WHERE (utc_date + INTERVAL '2 hours') < CURRENT_TIMESTAMP AND league_name= $1",
+    text: "SELECT * FROM matches WHERE (utc_date + INTERVAL '2 hours') < CURRENT_TIMESTAMP AND league_name= $1 AND status != 'FINISHED'",
     values: [league_name],
   });
 
