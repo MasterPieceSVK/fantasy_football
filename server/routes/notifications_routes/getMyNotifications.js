@@ -15,7 +15,7 @@ getMyNotificationsRouter.get("/", authMiddleware, async (req, res) => {
 
     const notifs = await doesUserHaveNotifs(user_id);
     if (!notifs) {
-      return res.status(404).json({ message: "No notifications found" });
+      return res.status(204).send();
     }
 
     let notifications;
