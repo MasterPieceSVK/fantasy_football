@@ -17,7 +17,7 @@ getMyBetsRouter.get("/", authMiddleware, async (req, res) => {
     }
 
     if (!myBets) {
-      return res.status(404).json({ message: "No bets found." });
+      return res.status(204).json({ message: "No bets found." });
     }
 
     const settledBets = myBets.filter((bet) => {

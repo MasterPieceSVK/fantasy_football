@@ -53,4 +53,7 @@ apiRouter.use("/get-user-info", getUserInfoRouter);
 const getBalanceAmountRouter = require("./routes/user_routes/getBalance");
 apiRouter.use("/get-balance", getBalanceAmountRouter);
 
+const notificationsRouter = require("./routes/bet_routes/notifications");
+apiRouter.use("/does-user-have-notifications", notificationsRouter);
+
 module.exports = apiRouter;

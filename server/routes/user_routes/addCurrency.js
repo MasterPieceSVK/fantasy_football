@@ -44,3 +44,42 @@ addCurrencyRouter.put("/", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Something went wrong. Error Code 13" });
   }
 });
+
+addCurrencyRouter.get("/is-eligible", authMiddleware, async (req, res) => {
+  try {
+    const { user_id } = req;
+
+    const claimed_at = await isUserEligibleForNewCurrency(user_id);
+    if (claimed_at == null) {
+      return res.status(200).json({
+        eligible: true,
+      });
+    }
+
+    let utc_date = new Date(claimed_at);
+    utc_date.setHours(utc_date.getHours() + 24);
+
+    const dateRn = new Date();
+
+    if (utc_date > dateRn) {
+      const { diffHrs, diffMins, diffSecs } = calculateTimeRemaining(
+        utc_date,
+        dateRn
+      );
+
+      return res.status(200).json({
+        eligible: false,
+        message: "24 hours have not passed since your last free claim.",
+        timeRemaining: `${diffHrs}:${diffMins}:${diffSecs}`,
+        availableAgain: utc_date,
+      });
+    } else {
+      return res.status(200).json({
+        eligible: true,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Something went wrong. Error Code 17" });
+  }
+});

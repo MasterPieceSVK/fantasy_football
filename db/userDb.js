@@ -132,9 +132,9 @@ async function isUserEligibleForNewCurrency(user_id) {
   });
 
   return db
-    .one(isEligibleSql)
+    .oneOrNone(isEligibleSql)
     .then((data) => {
-      return data.claimed_at;
+      return data ? data.claimed_at : null;
     })
     .catch((e) => {
       console.log(e);

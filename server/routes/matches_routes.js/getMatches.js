@@ -6,7 +6,9 @@ module.exports = getMatchesRouter;
 getMatchesRouter.get("/", async (req, res) => {
   try {
     const matches = await getMatches();
-
+    if (!matches) {
+      return res.status(204).send();
+    }
     let finishedMatches = [];
     finishedMatches = matches.filter((match) => {
       return match.status == "FINISHED";

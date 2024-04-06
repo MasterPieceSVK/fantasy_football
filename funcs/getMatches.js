@@ -72,6 +72,9 @@ async function formatData(data, i) {
     });
     if (theMatch) {
       theMatch.league_name = odd.league_name;
+      if (theMatch.league_name == "Serie A - Italy") {
+        theMatch.league_name = "Seria A - Italy";
+      }
       theMatch.home_odd = odd.home_odd;
       theMatch.away_odd = odd.away_odd;
       theMatch.draw_odd = odd.draw_odd;
