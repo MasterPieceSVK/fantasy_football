@@ -56,4 +56,7 @@ apiRouter.use("/get-balance", getBalanceAmountRouter);
 const notificationsRouter = require("./routes/bet_routes/notifications");
 apiRouter.use("/does-user-have-notifications", notificationsRouter);
 
+const getLeaderboardRouter = require("./routes/leaderboard_routes/getLeaderboard");
+apiRouter.use("/get-leaderboard", getLeaderboardRouter);
+
 module.exports = apiRouter;
