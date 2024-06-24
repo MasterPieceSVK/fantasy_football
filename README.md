@@ -1,0 +1,1 @@
+This is the backend for the [Fantasy football betting website](https://github.com/MasterPieceSVK/fantasy_football_frontend). It also includes scripts for fetching football matches and bookmaker betting odds APIs.
